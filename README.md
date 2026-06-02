@@ -1,895 +1,188 @@
-# HireSync 
+# 🚀 HireSync: Campus Placement Management System
 
-## Placement Management System
-
-## Project Overview
-
-Develop a full-stack Placement Management System that helps students, companies, and placement officers manage the complete campus placement process digitally.
-
-The application should provide role-based access for Students, Companies, and Placement Officers (Admin).
-
-The system should support:
-
-* Student profile management
-* Resume management
-* Company management
-* Job posting
-* Placement drives
-* Job applications
-* Candidate shortlisting
-* Interview scheduling
-* Final placement tracking
-* Analytics and reporting
+HireSync is a modern, full-stack campus placement management system designed to streamline and digitize recruitment operations. It provides dedicated portals and automated workflows for three roles: **Students**, **Recruiters (Companies)**, and **Placement Officers (Admins)**.
 
 ---
 
-# Tech Stack
+## 🛠️ Tech Stack
 
-## Frontend
-
-* React.js
-* Tailwind CSS
-* React Router DOM
-* Axios
-
-## Backend
-
-* Node.js
-* Express.js
-
-## Database
-
-* MySQL
-
-## Development Tools
-
-* MySQL Workbench
-* VS Code
-* Git
-
-## Authentication
-
-* JWT (JSON Web Token)
-* bcrypt for password hashing
-
-## File Uploads
-
-* Multer
-* Local Storage (for development)
+| Layer | Technology | Key Libraries |
+| :--- | :--- | :--- |
+| **Frontend** | React.js | Vite, React Router DOM, Axios, Tailwind CSS, React Hook Form |
+| **Backend** | Node.js, Express.js | Multer (uploads), JWT, bcryptjs, express-validator, Helmet |
+| **Database** | MySQL | mysql2 (Pool connection management) |
+| **Hosting** | Netlify (Frontend) | Railway (Backend & MySQL Database) |
 
 ---
 
-# User Roles
+## 🔑 Core Roles & Features
 
-## 1. Student
+### 1. 🎓 Student Portal
+* **Profile Management**: Build academic profile details (GPA, course, department, passing year, skills).
+* **Resume Versioning**: Upload and view multiple PDF resume versions with dynamic download capability.
+* **Job Portal**: Search and filter job listings by minimum CGPA, salary package, company location, and required skills.
+* **Application Tracker**: Apply for drives, track applications through stages (`Applied`, `Shortlisted`, `Interview Scheduled`, `Selected`, `Rejected`), or withdraw.
+* **Interview Timeline**: View scheduled interview rounds, dates, and final selection statuses with notifications.
 
-Students can:
+### 2. 🏢 Recruiter (Company) Portal
+* **Approval Flow**: Self-registers as a company. Starts as `Pending` and cannot log in until approved by the Admin.
+* **Job Listings**: Create, edit, close, and delete job postings with eligibility criteria.
+* **Applicant Actions**: Shortlist, reject, download applicant CVs, or schedule interview rounds.
+* **Interview Recorder**: Set up multiple rounds (e.g., Technical, HR) and mark candidates as `Passed`, `Failed`, or `Selected`.
 
-* Register
-* Login
-* Manage profile
-* Upload resume
-* View placement drives
-* View available jobs
-* Apply for jobs
-* Track application status
-* View interview schedules
-* View placement results
-
----
-
-## 2. Company
-
-Companies can:
-
-* Register/Login
-* Create company profile
-* Post jobs
-* Define eligibility criteria
-* View applicants
-* Shortlist candidates
-* Schedule interviews
-* Update candidate status
-* Mark final selections
+### 3. 💼 Placement Officer (Admin) Portal
+* **Dashboard Analytics**: Real-time counter metrics tracking total students, active companies, posted jobs, and successful placements.
+* **Corporate Approvals**: Approve or reject newly registered recruiter accounts.
+* **Placement Drive Coordinator**: Announce upcoming offline/online placement drives (dates, venue, details).
+* **Export Reports**: Generate and export CSV files for Students lists, Company metrics, and Placement logs.
 
 ---
 
-## 3. Placement Officer (Admin)
+## 📂 Project Structure
 
-Admins can:
-
-* Login
-* Manage students
-* Manage companies
-* Manage jobs
-* Manage placement drives
-* View all applications
-* View placement statistics
-* Generate reports
-* Approve company registrations
-
----
-
-# Core Features
-
-## Authentication Module
-
-### Student Authentication
-
-* Register
-* Login
-* Logout
-* Forgot Password
-* Reset Password
-
-### Company Authentication
-
-* Register
-* Login
-* Logout
-
-### Admin Authentication
-
-* Login
-* Logout
-
----
-
-# Student Module
-
-## Student Profile
-
-Store:
-
-* Name
-* Roll Number
-* Email
-* Phone
-* Department
-* Course
-* CGPA
-* Passing Year
-* Skills
-* Certifications
-
-Features:
-
-* Create profile
-* Edit profile
-* View profile
-
----
-
-## Resume Management
-
-Features:
-
-* Upload resume PDF
-* Replace resume
-* Download resume
-* View upload history
-
----
-
-## Job Portal
-
-Features:
-
-* View all active jobs
-* View company details
-* Search jobs
-* Filter jobs
-
-Filters:
-
-* Company
-* Location
-* Package
-* Eligibility
-
----
-
-## Job Applications
-
-Features:
-
-* Apply to jobs
-* View applied jobs
-* Withdraw application
-
-Application Status:
-
-* Applied
-* Shortlisted
-* Interview Scheduled
-* Selected
-* Rejected
-
----
-
-## Interview Module
-
-Features:
-
-* View interview schedule
-* View interview rounds
-* View interview results
-
----
-
-# Company Module
-
-## Company Profile
-
-Store:
-
-* Company Name
-* Website
-* Location
-* Industry
-* Description
-
-Features:
-
-* Create profile
-* Edit profile
-
----
-
-## Job Management
-
-Features:
-
-* Create job posting
-* Edit job posting
-* Delete job posting
-* Close job posting
-
-Job Information:
-
-* Job Title
-* Description
-* Package
-* Location
-* Minimum CGPA
-* Required Skills
-* Last Application Date
-
----
-
-## Applicant Management
-
-Features:
-
-* View applicants
-* Filter applicants
-* Search applicants
-* Download resumes
-
----
-
-## Shortlisting
-
-Features:
-
-* Shortlist candidates
-* Reject candidates
-* Move candidates to interview rounds
-
----
-
-## Interview Scheduling
-
-Features:
-
-* Schedule interviews
-* Assign interview rounds
-* Publish interview dates
-
----
-
-## Selection Management
-
-Features:
-
-* Mark selected students
-* Publish final results
-
----
-
-# Admin Module
-
-## Student Management
-
-Features:
-
-* View students
-* Edit students
-* Delete students
-* View placement status
-
----
-
-## Company Management
-
-Features:
-
-* Approve companies
-* Reject companies
-* Manage company accounts
-
----
-
-## Placement Drive Management
-
-Features:
-
-* Create drive
-* Update drive
-* Delete drive
-
-Drive Details:
-
-* Company
-* Date
-* Venue
-* Description
-
----
-
-## Job Monitoring
-
-Features:
-
-* View all jobs
-* View applications
-* Track progress
-
----
-
-## Reports
-
-Generate:
-
-* Student Reports
-* Company Reports
-* Placement Reports
-
-Export:
-
-* CSV
-* Excel
-
----
-
-# Bonus Features
-
-## Dashboard Analytics
-
-### Student Dashboard
-
-Show:
-
-* Total Applications
-* Upcoming Interviews
-* Placement Status
-
-### Company Dashboard
-
-Show:
-
-* Active Jobs
-* Applicants Count
-* Selected Candidates
-
-### Admin Dashboard
-
-Show:
-
-* Total Students
-* Total Companies
-* Total Jobs
-* Total Placements
-
----
-
-## Notification System
-
-Notifications for:
-
-* New Jobs
-* Interview Scheduled
-* Selection Status Updated
-* Placement Drive Announcements
-
----
-
-## Eligibility Checker
-
-Automatically verify:
-
-* CGPA
-* Department
-* Passing Year
-
-before allowing job application.
-
----
-
-## Search and Filtering
-
-Search:
-
-* Students
-* Companies
-* Jobs
-
-Filter:
-
-* Department
-* Package
-* Location
-* Skills
-
----
-
-## Placement Statistics
-
-Generate:
-
-* Placement Percentage
-* Average Package
-* Highest Package
-* Department-wise Placements
-
----
-
-## Activity Logs
-
-Track:
-
-* Login Activities
-* Applications
-* Job Updates
-* Interview Updates
-
----
-
-# Database Design
-
-## Tables
-
-### users
-
-Purpose:
-
-Store login information for all roles.
-
-Columns:
-
-* id
-* email
-* password
-* role
-* created_at
-
----
-
-### students
-
-Columns:
-
-* student_id
-* user_id
-* roll_no
-* name
-* phone
-* department
-* course
-* cgpa
-* passing_year
-
----
-
-### companies
-
-Columns:
-
-* company_id
-* user_id
-* company_name
-* website
-* location
-* industry
-* description
-
----
-
-### admins
-
-Columns:
-
-* admin_id
-* user_id
-* name
-
----
-
-### resumes
-
-Columns:
-
-* resume_id
-* student_id
-* resume_path
-* upload_date
-
----
-
-### skills
-
-Columns:
-
-* skill_id
-* skill_name
-
----
-
-### student_skills
-
-Columns:
-
-* student_id
-* skill_id
-
----
-
-### jobs
-
-Columns:
-
-* job_id
-* company_id
-* title
-* description
-* package_lpa
-* location
-* min_cgpa
-* last_date
-
----
-
-### placement_drives
-
-Columns:
-
-* drive_id
-* company_id
-* drive_date
-* venue
-* description
-
----
-
-### applications
-
-Columns:
-
-* application_id
-* student_id
-* job_id
-* status
-* applied_at
-
----
-
-### interviews
-
-Columns:
-
-* interview_id
-* application_id
-* round_name
-* interview_date
-* result
-
----
-
-### placements
-
-Columns:
-
-* placement_id
-* student_id
-* company_id
-* package_lpa
-* joining_date
-
----
-
-### notifications
-
-Columns:
-
-* notification_id
-* user_id
-* message
-* is_read
-* created_at
-
----
-
-### activity_logs
-
-Columns:
-
-* log_id
-* user_id
-* action
-* created_at
-
----
-
-# API Structure
-
-## Auth APIs
-
-POST /api/auth/register
-
-POST /api/auth/login
-
-POST /api/auth/logout
-
-POST /api/auth/forgot-password
-
-POST /api/auth/reset-password
-
----
-
-## Student APIs
-
-GET /api/students/profile
-
-PUT /api/students/profile
-
-POST /api/students/resume
-
-GET /api/students/applications
-
-POST /api/students/apply
-
----
-
-## Company APIs
-
-GET /api/company/jobs
-
-POST /api/company/jobs
-
-PUT /api/company/jobs/
-
-DELETE /api/company/jobs/
-
-GET /api/company/applicants
-
----
-
-## Admin APIs
-
-GET /api/admin/students
-
-GET /api/admin/companies
-
-GET /api/admin/reports
-
-POST /api/admin/drives
-
----
-
-# Folder Structure
-
+```text
 HireSync/
-
-frontend/
-
-src/
-
-components/
-
-pages/
-
-services/
-
-hooks/
-
-context/
-
-layouts/
-
-App.jsx
-
-backend/
-
-controllers/
-
-routes/
-
-middleware/
-
-models/
-
-config/
-
-uploads/
-
-server.js
-
-database/
-
-schema.sql
-
-seed.sql
-
-README.md
+├── database/
+│   ├── schema.sql           # Database table structures (Users, Students, Placements, etc.)
+│   ├── seed.sql             # Base database records (Admin login, core skills list)
+│   └── seed_jobs.sql        # Demo placement drives and mock recruiter listings
+├── backend/
+│   ├── config/              # Database pool connectors
+│   ├── controllers/         # Request handling logic (Auth, Students, Admin, Recruiter)
+│   ├── middleware/          # JWT protection, role authorizations, CORS handlers
+│   ├── routes/              # Express Router mapping (/api/auth, /api/students, etc.)
+│   ├── uploads/             # Stores uploaded PDFs locally in development
+│   ├── server.js            # Entry point (auto-migration check & static file serving)
+│   └── .env                 # Backend environment variables
+└── frontend/
+    ├── public/              # Static assets & icons
+    ├── src/
+    │   ├── components/      # Common UI wrappers (Cards, Headers, Loaders)
+    │   ├── context/         # Auth & Session state provider
+    │   ├── pages/           # Pages divided by portal roles
+    │   ├── services/        # Axios API clients
+    │   ├── utils/           # Shared helper formatters
+    │   └── App.jsx          # Route declarations
+    └── .env                 # Frontend environment variables
+```
 
 ---
 
-# Development Roadmap
+## ⚙️ Local Development Setup
 
-## Phase 1 - Project Setup
+### Prerequisites
+* **Node.js** (v18+)
+* **MySQL Server** (v8.0+)
 
-Tasks:
+### 1. Database Setup
+1. Open your MySQL client (Workbench or CLI) and run:
+   ```sql
+   CREATE DATABASE hiresync;
+   ```
+2. Import the schema to build the tables:
+   ```bash
+   mysql -u YOUR_USER -p hiresync < database/schema.sql
+   ```
+3. Seed the initial admin account and default skills list:
+   ```bash
+   mysql -u YOUR_USER -p hiresync < database/seed.sql
+   ```
 
-1. Initialize frontend React application.
-2. Configure Tailwind CSS.
-3. Create backend Express application.
-4. Configure MySQL connection.
-5. Setup environment variables.
-6. Create Git repository.
+### 2. Backend Installation & Config
+1. Navigate to the backend directory and install dependencies:
+   ```bash
+   cd backend
+   npm install
+   ```
+2. Create a `.env` file in the `backend/` folder and add:
+   ```env
+   PORT=5001
+   NODE_ENV=development
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=YOUR_MYSQL_USER
+   DB_PASSWORD=YOUR_MYSQL_PASSWORD
+   DB_NAME=hiresync
+   JWT_SECRET=your_super_secret_jwt_key
+   JWT_EXPIRES_IN=7d
+   CORS_ORIGIN=http://localhost:5173
+   ```
+3. Start the backend server:
+   ```bash
+   npm run dev
+   ```
+   *The backend will run on `http://localhost:5001` and check/migrate database columns on start.*
 
-Deliverable:
-
-Project skeleton ready.
-
----
-
-## Phase 2 - Database Design
-
-Tasks:
-
-1. Create database.
-2. Create tables.
-3. Define primary keys.
-4. Define foreign keys.
-5. Insert sample data.
-
-Deliverable:
-
-Working database schema.
-
----
-
-## Phase 3 - Backend Development
-
-Tasks:
-
-1. Configure Express.
-2. Configure MySQL.
-3. Create Models.
-4. Create Controllers.
-5. Create Routes.
-6. Implement Authentication.
-7. Implement JWT authorization.
-8. Implement Role-based access control.
-
-Deliverable:
-
-Fully functional REST API.
-
----
-
-## Phase 4 - Frontend Development
-
-Tasks:
-
-1. Create routing.
-2. Create authentication pages.
-3. Create dashboards.
-4. Create forms.
-5. Integrate APIs using Axios.
-6. Add protected routes.
-
-Deliverable:
-
-Fully functional frontend.
+### 3. Frontend Installation & Config
+1. Open a new terminal window, navigate to the frontend directory:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. Create a `.env` file in the `frontend/` folder and add:
+   ```env
+   VITE_API_URL=http://localhost:5001
+   ```
+3. Start the Vite development build:
+   ```bash
+   npm run dev
+   ```
+   *The frontend will run on `http://localhost:5173`.*
 
 ---
 
-## Phase 5 - Core Features
+## 🚀 Production Deployment Guide
 
-Tasks:
+### 1. Database & Backend (Railway)
+1. **Database**: Spin up a **MySQL** instance on Railway and import the `database/schema.sql` and `database/seed.sql` files.
+2. **Backend**: Link your repository to Railway and set the root directory to `backend/`. Add the following environment variables in the Railway dashboard:
+   * `PORT`: `5000` (or leave empty for Railway default)
+   * `NODE_ENV`: `production`
+   * `DB_HOST`: *Your Railway MySQL Host*
+   * `DB_PORT`: *Your Railway MySQL Port*
+   * `DB_USER`: *Your Railway MySQL Username*
+   * `DB_PASSWORD`: *Your Railway MySQL Password*
+   * `DB_NAME`: *Your Railway MySQL Database Name*
+   * `CORS_ORIGIN`: *Your Netlify Frontend URL (e.g. `https://hiresyncx.netlify.app`)*
+   * `JWT_SECRET`: *A secure random string*
 
-1. Student Profile Management.
-2. Resume Upload.
-3. Job Posting.
-4. Job Applications.
-5. Placement Drives.
-6. Interview Scheduling.
-7. Candidate Shortlisting.
-8. Placement Tracking.
-
-Deliverable:
-
-Complete placement workflow.
-
----
-
-## Phase 6 - Advanced Features
-
-Tasks:
-
-1. Notifications.
-2. Search and Filters.
-3. Dashboard Analytics.
-4. Reports.
-5. Placement Statistics.
-6. Activity Logs.
-
-Deliverable:
-
-Production-level feature set.
+### 2. Frontend (Netlify)
+1. Connect the repository and configure the build settings on Netlify:
+   * **Base directory**: `frontend`
+   * **Build command**: `npm run build`
+   * **Publish directory**: `frontend/dist`
+2. Add the following environment variable in the Netlify settings:
+   * `VITE_API_URL`: *Your Railway Backend URL (e.g., `https://hiresync-production.up.railway.app`)*
+3. **Redirect configuration (for SPA routing)**: Create a file named `_redirects` inside `frontend/public/` with the following content to prevent 404 errors on refreshing pages:
+   ```text
+   /*    /index.html   200
+   ```
 
 ---
 
-## Phase 7 - Testing
+## 📋 API Routes Reference
 
-Tasks:
+### Authentication
+* `POST /api/auth/register` — Create new student/company login
+* `POST /api/auth/login` — Sign in and receive JWT token
+* `POST /api/auth/forgot-password` — Request a recovery code
+* `POST /api/auth/reset-password` — Reset password using the code
 
-1. API Testing.
-2. Authentication Testing.
-3. Database Testing.
-4. UI Testing.
-5. Role Permission Testing.
+### Student
+* `GET /api/students/profile` — Get logged-in student's details
+* `PUT /api/students/profile` — Update student profile fields
+* `POST /api/students/resume` — Upload a new resume PDF (Multer)
+* `GET /api/students/applications` — Get job applications log
+* `POST /api/students/apply` — Apply to a job listing
 
-Deliverable:
+### Company
+* `GET /api/companies/jobs` — Retrieve recruiter's active jobs
+* `POST /api/companies/jobs` — Create a new job listing
+* `GET /api/companies/applicants` — Retrieve applicants details
+* `POST /api/companies/interviews` — Schedule an interview round
 
-Bug-free application.
-
----
-
-## Phase 8 - Deployment
-
-Frontend:
-
-* Netlify
-
-Backend:
-
-* Render
-
-Database:
-
-* MySQL
-
-Deliverable:
-
-Live hosted application.
-
----
-
-# Expected Outcome
-
-Build a complete production-style Placement Management System (centralised) with:
-
-* Role-based authentication
-* Student management
-* Company management
-* Job posting and applications
-* Placement drives
-* Interview management
-* Placement tracking
-* Analytics dashboard
-* Notifications
-* Reporting system
-
-The code should follow clean architecture, modular folder structure, reusable React components, RESTful API principles, secure authentication, and normalized MySQL database design.
+### Admin
+* `GET /api/admin/students` — View student database
+* `GET /api/admin/companies` — View company accounts for approval
+* `PUT /api/admin/companies/:id/status` — Approve or reject company status
+* `GET /api/admin/reports` — Fetch statistical placement logs for download
