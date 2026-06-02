@@ -102,5 +102,37 @@ INSERT INTO notifications (notification_id, user_id, message, is_read, created_a
 	(3, 4, 'Your profile matches the Data Analyst role requirements.', TRUE, '2026-03-07 15:10:00'),
 	(4, 5, 'New placement drive announced by TechWave Solutions Pvt Ltd.', FALSE, '2026-03-08 09:30:00'),
 	(5, 1, 'Two new job applications are awaiting review.', FALSE, '2026-03-08 10:00:00');
+    
+INSERT INTO placement_drives
+(
+    company_id,
+    drive_date,
+    venue,
+    description
+)
+VALUES
+(
+    1,
+    '2026-09-05',
+    'HireSync Auditorium, Bengaluru',
+    'Campus drive for software engineering and web development roles.'
+),
+(
+    2,
+    '2026-09-08',
+    'Virtual Interview Room',
+    'Drive focused on analytics and business roles.'
+),
+(
+    3,
+    '2026-09-12',
+    'Placement Hall, Pune',
+    'AI and machine learning recruitment drive.'
+);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+
+

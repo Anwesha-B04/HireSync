@@ -3,6 +3,7 @@ const { body } = require('express-validator');
 const {
   registerStudent,
   registerCompany,
+  registerAdmin,
   login,
   logout
 } = require('../controllers/authController');
@@ -44,6 +45,18 @@ router.post(
     body('industry').notEmpty().withMessage('Industry is required')
   ],
   registerCompany
+);
+
+router.post(
+  '/register/admin',
+  [
+    emailValidation,
+    passwordValidation,
+    body('name')
+      .notEmpty()
+      .withMessage('Name is required')
+  ],
+  registerAdmin
 );
 
 router.post(

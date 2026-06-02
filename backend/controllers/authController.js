@@ -97,6 +97,17 @@ const registerUser = (role) => async (req, res, next) => {
       );
     }
 
+    if (role === 'admin') {
+      await connection.query(
+        `INSERT INTO admins (user_id, name)
+     VALUES (?, ?)`,
+        [
+          userId,
+          name
+        ]
+      );
+    }
+
     await connection.commit();
 
     const token = createToken({ id: userId, email, role });
@@ -121,6 +132,7 @@ const registerUser = (role) => async (req, res, next) => {
 
 const registerStudent = registerUser('student');
 const registerCompany = registerUser('company');
+const registerAdmin = registerUser('admin');
 
 const login = async (req, res, next) => {
   const errors = validationResult(req);
@@ -211,6 +223,7 @@ const logout = async (_req, res) => {
 module.exports = {
   registerStudent,
   registerCompany,
+  registerAdmin,
   login,
   logout,
   createToken

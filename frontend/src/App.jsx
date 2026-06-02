@@ -23,6 +23,7 @@ import StudentProfile from './pages/student/StudentProfile';
 import Login from './pages/Login';
 import RegisterCompany from './pages/RegisterCompany';
 import RegisterStudent from './pages/RegisterStudent';
+import RegisterAdmin from './pages/RegisterAdmin';
 import Landing from './pages/Landing';
 import LoginSelection from './pages/LoginSelection';
 
@@ -39,6 +40,7 @@ function App() {
       <Route path="/register" element={<GuestOnlyRoute><RegisterSelectionPage /></GuestOnlyRoute>} />
       <Route path="/register/student" element={<GuestOnlyRoute><RegisterStudent /></GuestOnlyRoute>} />
       <Route path="/register/company" element={<GuestOnlyRoute><RegisterCompany /></GuestOnlyRoute>} />
+      <Route path="/register/admin" element={<GuestOnlyRoute><RegisterAdmin /></GuestOnlyRoute>} />
 
       <Route
         path="/student"
@@ -106,6 +108,7 @@ function RegisterSelectionPage() {
       cards={[
         { label: 'Student Registration', to: '/register/student', description: 'Create a student account and complete your profile.' },
         { label: 'Company Registration', to: '/register/company', description: 'Create a company account and start posting jobs.' },
+        { label: 'Admin Registration', to: '/register/admin', description: 'Create an admin account to manage the platform.' },
       ]}
       backTo="/"
       backLabel="Back to Home"
