@@ -95,10 +95,26 @@ app.use((err, req, res, _next) => {
 	res.json(response);
 });
 
+const runMigrations = async () => {
+	try {
+		const [columns] = await pool.query("SHOW COLUMNS FROM companies LIKE 'status'");
+		if (columns.length === 0) {
+			console.log("Migration: Adding 'status' column to 'companies' table...");
+			await pool.query("ALTER TABLE companies ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'approved'");
+			console.log("Migration: 'status' column added successfully.");
+		}
+	} catch (err) {
+		console.warn('Migration warning (companies status column check):', err.message);
+	}
+};
+
 const startServer = async () => {
 	try {
 		await pool.query('SELECT 1');
 		console.log('MySQL Connected Successfully');
+
+		// Run auto-migrations
+		await runMigrations();
 
 		app.listen(port, () => {
 			console.log(`HireSync backend running on port ${port}`);
