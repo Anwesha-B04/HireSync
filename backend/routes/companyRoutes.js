@@ -52,4 +52,25 @@ router.post(
   controller.shortlistStudent
 );
 
+router.post(
+  '/interviews',
+  [
+    body('applicationId').isInt().withMessage('applicationId must be integer'),
+    body('roundName').notEmpty().withMessage('roundName is required'),
+    body('interviewDate').isISO8601().withMessage('interviewDate must be a valid ISO date')
+  ],
+  controller.scheduleInterview
+);
+
+router.get('/interviews', controller.getInterviews);
+
+router.put(
+  '/interviews/:interviewId/result',
+  [
+    param('interviewId').isInt().withMessage('interviewId must be numeric'),
+    body('result').isIn(['pending', 'passed', 'failed', 'selected', 'rejected']).withMessage('Invalid result')
+  ],
+  controller.updateInterviewResult
+);
+
 module.exports = router;

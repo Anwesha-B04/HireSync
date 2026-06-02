@@ -20,6 +20,8 @@ import StudentJobs from './pages/student/StudentJobs';
 import StudentNotifications from './pages/student/StudentNotifications';
 import StudentOverview from './pages/student/StudentOverview';
 import StudentProfile from './pages/student/StudentProfile';
+import StudentDrives from './pages/student/StudentDrives';
+import StudentInterviews from './pages/student/StudentInterviews';
 import Login from './pages/Login';
 import RegisterCompany from './pages/RegisterCompany';
 import RegisterStudent from './pages/RegisterStudent';
@@ -55,6 +57,8 @@ function App() {
         <Route path="profile" element={<StudentProfile />} />
         <Route path="jobs" element={<StudentJobs />} />
         <Route path="applications" element={<StudentApplications />} />
+        <Route path="drives" element={<StudentDrives />} />
+        <Route path="interviews" element={<StudentInterviews />} />
         <Route path="notifications" element={<StudentNotifications />} />
       </Route>
 

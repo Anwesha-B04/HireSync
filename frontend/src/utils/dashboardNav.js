@@ -3,6 +3,8 @@ export const STUDENT_NAV = [
   { label: 'Profile', path: '/student/profile' },
   { label: 'Jobs', path: '/student/jobs' },
   { label: 'Applications', path: '/student/applications' },
+  { label: 'Placement Drives', path: '/student/drives' },
+  { label: 'Interviews', path: '/student/interviews' },
   { label: 'Notifications', path: '/student/notifications' },
 ];
 

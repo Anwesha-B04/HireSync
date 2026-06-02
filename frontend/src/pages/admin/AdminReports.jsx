@@ -6,12 +6,13 @@ import {
   SectionCard,
   StatCard,
 } from '../../components/dashboard/DashboardUI';
-import { getSummary } from '../../services/adminService';
+import { getSummary, getStudents, getCompanies, getPlacements } from '../../services/adminService';
 
 export default function AdminReports() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -51,6 +52,72 @@ export default function AdminReports() {
     };
   }, [summary]);
 
+  const triggerCSVDownload = (data, filename) => {
+    if (!data || data.length === 0) {
+      alert('No data available for export');
+      return;
+    }
+    const headers = Object.keys(data[0]);
+    const csvRows = [
+      headers.join(','), // Header row
+      ...data.map((row) =>
+        headers
+          .map((header) => {
+            const val = row[header] === null || row[header] === undefined ? '' : String(row[header]);
+            return `"${val.replace(/"/g, '""')}"`;
+          })
+          .join(',')
+      ),
+    ];
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportStudents = async () => {
+    try {
+      setExporting(true);
+      const data = await getStudents();
+      triggerCSVDownload(data.students || [], 'HireSync_Students_Report.csv');
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to export students');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportCompanies = async () => {
+    try {
+      setExporting(true);
+      const data = await getCompanies();
+      triggerCSVDownload(data.companies || [], 'HireSync_Companies_Report.csv');
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to export companies');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportPlacements = async () => {
+    try {
+      setExporting(true);
+      const data = await getPlacements();
+      triggerCSVDownload(data.placements || [], 'HireSync_Placements_Report.csv');
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to export placements');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   if (loading) return <LoadingPanel message="Loading reports..." />;
   if (error) return <ErrorPanel message={error} />;
 
@@ -81,23 +148,46 @@ export default function AdminReports() {
 
       <div className="mt-10" />
 
-      <SectionCard title="Detailed Metrics Summary">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <Metric label="Students Count" value={summary?.students ?? 0} />
-          <Metric label="Companies Registered" value={summary?.companies ?? 0} />
-          <Metric label="Job Postings" value={summary?.jobs ?? 0} />
-          <Metric label="Job Applications" value={summary?.applications ?? 0} />
+      <SectionCard title="Download Placement Audit Logs & Reports">
+        <p className="text-xs text-slate-500 mb-6 max-w-xl">
+          Export structured comma-separated spreadsheet documents for audit, archiving, or department scheduling.
+        </p>
+
+        <div className="flex flex-wrap gap-4">
+          <button
+            onClick={handleExportStudents}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-xs font-bold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-700 hover:shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export Student Database (CSV)
+          </button>
+
+          <button
+            onClick={handleExportCompanies}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-650 hover:bg-slate-50 shadow-sm transition-all duration-200 disabled:opacity-50"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export Registered Companies (CSV)
+          </button>
+
+          <button
+            onClick={handleExportPlacements}
+            disabled={exporting}
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-bold text-white shadow-md shadow-emerald-600/10 hover:bg-emerald-700 hover:shadow-emerald-600/20 transition-all duration-200 disabled:opacity-50"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Export Placements Log (CSV)
+          </button>
         </div>
       </SectionCard>
-    </div>
-  );
-}
-
-function Metric({ label, value }) {
-  return (
-    <div className="rounded-3xl border border-slate-100 bg-slate-50/40 px-5 py-6 text-center hover:bg-slate-50 transition-colors duration-200">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
-      <p className="mt-3 text-3xl font-black text-slate-900 tracking-tight">{value}</p>
     </div>
   );
 }

@@ -84,8 +84,8 @@ const registerUser = (role) => async (req, res, next) => {
 
     if (role === 'company') {
       await connection.query(
-        `INSERT INTO companies (user_id, company_name, website, location, industry, description)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO companies (user_id, company_name, website, location, industry, description, status)
+         VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
         [
           userId,
           companyName,
@@ -183,10 +183,19 @@ const login = async (req, res, next) => {
 
     if (user.role === 'company') {
       const [companies] = await pool.query(
-        'SELECT company_id, company_name, website, location, industry, description FROM companies WHERE user_id = ?',
+        'SELECT company_id, company_name, website, location, industry, description, status FROM companies WHERE user_id = ?',
         [user.id]
       );
-      profile = companies[0] || null;
+      const company = companies[0];
+      if (company) {
+        if (company.status === 'pending') {
+          return res.status(403).json({ success: false, message: 'Your company registration is pending admin approval' });
+        }
+        if (company.status === 'rejected') {
+          return res.status(403).json({ success: false, message: 'Your company registration request has been rejected' });
+        }
+      }
+      profile = company || null;
     }
 
     if (user.role === 'admin') {
@@ -220,11 +229,55 @@ const logout = async (_req, res) => {
   });
 };
 
+const resetTokens = {};
+
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const [users] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
+      return res.status(404).json({ success: false, message: 'No account associated with this email' });
+    }
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    resetTokens[email] = {
+      token: code,
+      expires: Date.now() + 10 * 60 * 1000
+    };
+    return res.status(200).json({
+      success: true,
+      message: 'A verification code has been generated. For this demonstration, the code is provided here.',
+      token: code
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const { email, token, newPassword } = req.body;
+    const record = resetTokens[email];
+    if (!record || record.token !== token || record.expires < Date.now()) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired verification code' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
+    delete resetTokens[email];
+
+    return res.status(200).json({ success: true, message: 'Password has been reset successfully' });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   registerStudent,
   registerCompany,
   registerAdmin,
   login,
   logout,
+  forgotPassword,
+  resetPassword,
   createToken
 };

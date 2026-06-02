@@ -74,7 +74,7 @@ const listCompanies = async (req, res, next) => {
     const pageSize = Number(req.query.pageSize) || 20;
     const offset = (page - 1) * pageSize;
 
-    const [rows] = await pool.query('SELECT SQL_CALC_FOUND_ROWS c.company_id, c.company_name, c.website, c.location, c.industry, c.description, u.email FROM companies c JOIN users u ON c.user_id = u.id ORDER BY c.created_at DESC LIMIT ? OFFSET ?', [pageSize, offset]);
+    const [rows] = await pool.query('SELECT SQL_CALC_FOUND_ROWS c.company_id, c.company_name, c.website, c.location, c.industry, c.description, c.status, u.email FROM companies c JOIN users u ON c.user_id = u.id ORDER BY c.created_at DESC LIMIT ? OFFSET ?', [pageSize, offset]);
     const [countRes] = await pool.query('SELECT FOUND_ROWS() as total');
     const total = countRes[0] ? Number(countRes[0].total) : rows.length;
 
@@ -180,10 +180,15 @@ const createDrive = async (req, res, next) => {
 
   try {
     const { company_id, drive_date, venue, description } = req.body;
-    const [companies] = await pool.query('SELECT company_id FROM companies WHERE company_id = ?', [company_id]);
+    const [companies] = await pool.query('SELECT company_id, company_name FROM companies WHERE company_id = ?', [company_id]);
     if (companies.length === 0) return res.status(404).json({ success: false, message: 'Company not found' });
 
     const [result] = await pool.query('INSERT INTO placement_drives (company_id, drive_date, venue, description) VALUES (?, ?, ?, ?)', [company_id, drive_date, venue, description || null]);
+
+    const companyName = companies[0]?.company_name || 'Partner Company';
+    const { notifyAllStudents } = require('../utils/notifications');
+    await notifyAllStudents(`New Placement Drive Announced: "${companyName}" will host a drive on ${new Date(drive_date).toLocaleDateString()} at venue: "${venue}".`);
+
     return res.status(201).json({ success: true, message: 'Drive created', driveId: result.insertId });
   } catch (error) {
     return next(error);
@@ -243,6 +248,56 @@ const summaryReport = async (req, res, next) => {
   }
 };
 
+const updateCompanyStatus = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
+
+  try {
+    const companyId = Number(req.params.companyId);
+    const { status } = req.body;
+
+    const [companies] = await pool.query('SELECT company_id FROM companies WHERE company_id = ?', [companyId]);
+    if (companies.length === 0) return res.status(404).json({ success: false, message: 'Company not found' });
+
+    await pool.query('UPDATE companies SET status = ? WHERE company_id = ?', [status, companyId]);
+    return res.json({ success: true, message: `Company status updated to ${status}` });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const listInterviews = async (req, res, next) => {
+  try {
+    const [interviews] = await pool.query(
+      `SELECT i.interview_id, i.round_name, i.interview_date, i.result, s.name as student_name, s.roll_no, j.title as job_title, c.company_name
+       FROM interviews i
+       JOIN applications a ON i.application_id = a.application_id
+       JOIN students s ON a.student_id = s.student_id
+       JOIN jobs j ON a.job_id = j.job_id
+       JOIN companies c ON j.company_id = c.company_id
+       ORDER BY i.interview_date DESC`
+    );
+    return res.json({ success: true, interviews });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const listPlacements = async (req, res, next) => {
+  try {
+    const [placements] = await pool.query(
+      `SELECT p.placement_id, p.package_lpa, p.joining_date, s.name as student_name, s.roll_no, s.department, s.course, c.company_name
+       FROM placements p
+       JOIN students s ON p.student_id = s.student_id
+       JOIN companies c ON p.company_id = c.company_id
+       ORDER BY p.joining_date DESC`
+    );
+    return res.json({ success: true, placements });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   listStudents,
   getStudent,
@@ -252,6 +307,7 @@ module.exports = {
   getCompany,
   updateCompany,
   deleteCompany,
+  updateCompanyStatus,
   listJobs,
   getJob,
   deleteJob,
@@ -259,5 +315,7 @@ module.exports = {
   createDrive,
   updateDrive,
   deleteDrive,
-  summaryReport
+  summaryReport,
+  listInterviews,
+  listPlacements
 };

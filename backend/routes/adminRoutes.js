@@ -42,6 +42,7 @@ router.put(
   controller.updateCompany
 );
 router.delete('/companies/:companyId', [param('companyId').isInt().withMessage('companyId must be numeric')], controller.deleteCompany);
+router.put('/companies/:companyId/status', [param('companyId').isInt().withMessage('companyId must be numeric'), body('status').isIn(['approved', 'rejected', 'pending'])], controller.updateCompanyStatus);
 
 // Jobs
 router.get('/jobs', controller.listJobs);
@@ -60,5 +61,9 @@ router.delete('/drives/:driveId', [param('driveId').isInt().withMessage('driveId
 
 // Reports
 router.get('/reports/summary', controller.summaryReport);
+
+// Interviews & Placements overview
+router.get('/interviews', controller.listInterviews);
+router.get('/placements', controller.listPlacements);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Badge,
   EmptyState,
@@ -19,6 +19,12 @@ export default function StudentJobs() {
   const [error, setError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [busyJobId, setBusyJobId] = useState(null);
+
+  // Search & Filter States
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [minPackage, setMinPackage] = useState('');
+  const [maxCgpa, setMaxCgpa] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -60,6 +66,32 @@ export default function StudentJobs() {
     }
   };
 
+  // Extract unique locations for filtering dropdown
+  const locations = useMemo(() => {
+    const locSet = new Set(jobs.map((job) => job.location).filter(Boolean));
+    return Array.from(locSet);
+  }, [jobs]);
+
+  // Compute filtered jobs
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) => {
+      const matchesSearch =
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.company_name.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesLocation =
+        !selectedLocation || job.location.toLowerCase() === selectedLocation.toLowerCase();
+
+      const matchesPackage =
+        !minPackage || Number(job.package_lpa) >= Number(minPackage);
+
+      const matchesCgpa =
+        !maxCgpa || Number(job.min_cgpa) <= Number(maxCgpa);
+
+      return matchesSearch && matchesLocation && matchesPackage && matchesCgpa;
+    });
+  }, [jobs, searchTerm, selectedLocation, minPackage, maxCgpa]);
+
   if (loading) return <LoadingPanel message="Loading jobs..." />;
   if (error) return <ErrorPanel message={error} />;
 
@@ -77,10 +109,61 @@ export default function StudentJobs() {
         </div>
       ) : null}
 
+      {/* Search and Filters panel */}
+      <div className="mb-6 p-6 rounded-3xl border border-slate-200/80 bg-white shadow-sm flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex-1">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Search positions</label>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by job title or company..."
+            className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div className="w-full md:w-48">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Location</label>
+          <select
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm focus:border-indigo-500"
+          >
+            <option value="">All Locations</option>
+            {locations.map((loc) => (
+              <option key={loc} value={loc}>{loc}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="w-full md:w-36">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Min Package (LPA)</label>
+          <input
+            type="number"
+            value={minPackage}
+            onChange={(e) => setMinPackage(e.target.value)}
+            placeholder="e.g. 6"
+            className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm focus:border-indigo-500"
+          />
+        </div>
+
+        <div className="w-full md:w-36">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Max Req CGPA</label>
+          <input
+            type="number"
+            step="0.1"
+            value={maxCgpa}
+            onChange={(e) => setMaxCgpa(e.target.value)}
+            placeholder="e.g. 8.0"
+            className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm focus:border-indigo-500"
+          />
+        </div>
+      </div>
+
       <SectionCard title="Job Listings">
-        {jobs.length > 0 ? (
+        {filteredJobs.length > 0 ? (
           <div className="grid gap-4 lg:grid-cols-2">
-            {jobs.map((job) => {
+            {filteredJobs.map((job) => {
               const alreadyApplied = appliedJobIds.has(job.job_id);
               const isOpen = Number(job.is_open_for_application) === 1;
               return (
@@ -126,31 +209,35 @@ export default function StudentJobs() {
                         <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span>Deadline: <strong className="text-slate-800">{formatDate(job.last_date)}</strong></span>
+                        <span>Deadline: <strong className="text-slate-850 font-extrabold">{formatDate(job.last_date)}</strong></span>
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    disabled={!isOpen || alreadyApplied || busyJobId === job.job_id}
-                    onClick={() => handleApply(job.job_id)}
-                    className="mt-6 w-full rounded-xl bg-indigo-600 py-3 text-xs font-bold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-700 transition-all disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {!isOpen
-                      ? 'Deadline passed'
-                      : alreadyApplied
-                        ? 'Applied'
-                        : busyJobId === job.job_id
-                          ? 'Applying...'
-                          : 'Apply Now'}
-                  </button>
+                  <div className="mt-6 border-t border-slate-100 pt-4 flex justify-end">
+                    {alreadyApplied ? (
+                      <button
+                        disabled
+                        className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-2.5 text-xs font-bold text-slate-400 cursor-not-allowed"
+                      >
+                        Applied ✓
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleApply(job.job_id)}
+                        disabled={!isOpen || busyJobId === job.job_id}
+                        className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-700 hover:shadow-indigo-600/20 active:translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {busyJobId === job.job_id ? 'Applying...' : 'Apply Now'}
+                      </button>
+                    )}
+                  </div>
                 </article>
               );
             })}
           </div>
         ) : (
-          <EmptyState title="No jobs available" description="Check back later for new placement openings." />
+          <EmptyState title="No matches found" description="Adjust your filters or query to find active positions." />
         )}
       </SectionCard>
     </div>

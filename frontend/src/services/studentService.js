@@ -62,3 +62,23 @@ export const removeSkill = async (skillId) => {
 
   return response.data;
 };
+
+export const getDrives = async () => {
+  const response = await api.get('/api/students/drives');
+  return response.data;
+};
+
+export const getInterviews = async () => {
+  const response = await api.get('/api/students/interviews');
+  return response.data;
+};
+
+export const getNotifications = async () => {
+  const response = await api.get('/api/students/notifications');
+  return response.data;
+};
+
+export const markNotificationRead = async (notificationId) => {
+  const response = await api.put(`/api/students/notifications/${notificationId}/read`);
+  return response.data;
+};

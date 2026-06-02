@@ -40,3 +40,28 @@ export const deleteDrive = async (driveId) => {
   );
   return response.data;
 };
+
+export const updateCompanyStatus = async (companyId, status) => {
+  const response = await api.put(`/api/admin/companies/${companyId}/status`, { status });
+  return response.data;
+};
+
+export const updateStudent = async (studentId, payload) => {
+  const response = await api.put(`/api/admin/students/${studentId}`, payload);
+  return response.data;
+};
+
+export const deleteStudent = async (studentId) => {
+  const response = await api.delete(`/api/admin/students/${studentId}`);
+  return response.data;
+};
+
+export const getInterviews = async () => {
+  const response = await api.get('/api/admin/interviews');
+  return response.data;
+};
+
+export const getPlacements = async () => {
+  const response = await api.get('/api/admin/placements');
+  return response.data;
+};

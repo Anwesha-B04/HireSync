@@ -264,6 +264,70 @@ const removeSkill = async (req, res, next) => {
   }
 };
 
+const getNotifications = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const [rows] = await pool.query(
+      'SELECT notification_id, message, is_read, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC',
+      [userId]
+    );
+    return res.json({ success: true, notifications: rows });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const readNotification = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const notificationId = Number(req.params.notificationId);
+    await pool.query(
+      'UPDATE notifications SET is_read = 1 WHERE notification_id = ? AND user_id = ?',
+      [notificationId, userId]
+    );
+    return res.json({ success: true, message: 'Notification marked as read' });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getInterviews = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const [students] = await pool.query('SELECT student_id FROM students WHERE user_id = ?', [userId]);
+    if (students.length === 0) return res.status(404).json({ success: false, message: 'Student profile not found' });
+    const studentId = students[0].student_id;
+
+    const [interviews] = await pool.query(
+      `SELECT i.interview_id, i.round_name, i.interview_date, i.result, j.title as job_title, c.company_name
+       FROM interviews i
+       JOIN applications a ON i.application_id = a.application_id
+       JOIN jobs j ON a.job_id = j.job_id
+       JOIN companies c ON j.company_id = c.company_id
+       WHERE a.student_id = ?
+       ORDER BY i.interview_date ASC`,
+      [studentId]
+    );
+    return res.json({ success: true, interviews });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getDrives = async (req, res, next) => {
+  try {
+    const [drives] = await pool.query(
+      `SELECT pd.drive_id, pd.drive_date, pd.venue, pd.description, c.company_name, c.website
+       FROM placement_drives pd
+       JOIN companies c ON pd.company_id = c.company_id
+       ORDER BY pd.drive_date DESC`
+    );
+    return res.json({ success: true, drives });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -272,5 +336,9 @@ module.exports = {
   applyJob,
   viewApplications,
   addSkill,
-  removeSkill
+  removeSkill,
+  getNotifications,
+  readNotification,
+  getInterviews,
+  getDrives
 };

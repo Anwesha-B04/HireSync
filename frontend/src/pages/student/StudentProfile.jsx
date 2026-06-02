@@ -199,6 +199,29 @@ export default function StudentProfile() {
                     </a>
                   </div>
                 )}
+
+                {profile?.resumes && profile.resumes.length > 0 && (
+                  <div className="pt-4 border-t border-slate-200/60 space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Resume Upload History</p>
+                    <div className="divide-y divide-slate-100 border border-slate-200/60 rounded-2xl bg-white overflow-hidden">
+                      {profile.resumes.map((res, index) => (
+                        <div key={res.resume_id} className="flex items-center justify-between px-4 py-2.5 hover:bg-slate-50/50 transition-colors">
+                          <span className="text-xs text-slate-500 font-semibold">
+                            Resume Version {profile.resumes.length - index} (Uploaded: {new Date(res.upload_date).toLocaleString()})
+                          </span>
+                          <a
+                            href={`http://localhost:5001/${res.resume_path}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 underline transition-colors"
+                          >
+                            View / Download
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

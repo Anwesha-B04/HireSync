@@ -56,4 +56,9 @@ router.post('/jobs/:jobId/apply', [param('jobId').isInt().withMessage('jobId mus
 
 router.get('/applications', studentController.viewApplications);
 
+router.get('/notifications', studentController.getNotifications);
+router.put('/notifications/:notificationId/read', [param('notificationId').isInt()], studentController.readNotification);
+router.get('/interviews', studentController.getInterviews);
+router.get('/drives', studentController.getDrives);
+
 module.exports = router;
