@@ -11,10 +11,27 @@ export default function LoginSelection() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-12 text-slate-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <header className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-600">HireSync</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Login Selection</h1>
-          <p className="mt-2 text-slate-600">Choose the account type you want to use to sign in.</p>
+        <header className="mb-8 flex items-start justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-600">
+              HireSync
+            </p>
+
+            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              Login Selection
+            </h1>
+
+            <p className="mt-2 text-slate-600">
+              Choose the account type you want to use to sign in.
+            </p>
+          </div>
+
+          <Link
+            to="/"
+            className="font-semibold text-indigo-600 hover:text-indigo-800"
+          >
+            Back to Home
+          </Link>
         </header>
 
         <div className="grid gap-6 md:grid-cols-3">

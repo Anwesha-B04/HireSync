@@ -46,6 +46,13 @@ app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(
+  '/uploads',
+  express.static(
+    path.join(process.cwd(), 'uploads')
+  )
+);
+
 // Prevent browsers from caching API JSON (avoids stale empty job lists after seeding)
 app.use('/api', (_req, res, next) => {
 	res.set('Cache-Control', 'no-store, no-cache, must-revalidate');

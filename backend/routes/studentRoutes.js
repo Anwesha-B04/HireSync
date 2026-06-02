@@ -43,6 +43,13 @@ router.put(
 
 router.post('/resume', upload.single('resume'), studentController.uploadResume);
 
+router.post('/skills', studentController.addSkill);
+
+router.delete(
+  '/skills/:skillId',
+  studentController.removeSkill
+);
+
 router.get('/jobs', studentController.viewJobs);
 
 router.post('/jobs/:jobId/apply', [param('jobId').isInt().withMessage('jobId must be numeric')], studentController.applyJob);

@@ -31,3 +31,34 @@ export const getDashboardData = async () => {
     applications: applicationsResponse.applications || []
   };
 };
+
+export const uploadResume = async (formData) => {
+  const response = await api.post(
+    '/api/students/resume',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+
+  return response.data;
+};
+
+export const addSkill = async (skillName) => {
+  const response = await api.post(
+    '/api/students/skills',
+    { skillName }
+  );
+
+  return response.data;
+};
+
+export const removeSkill = async (skillId) => {
+  const response = await api.delete(
+    `/api/students/skills/${skillId}`
+  );
+
+  return response.data;
+};

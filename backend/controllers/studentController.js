@@ -8,9 +8,23 @@ const getProfile = async (req, res, next) => {
     const userId = req.user.id;
 
     const [students] = await pool.query(
-      'SELECT student_id, roll_no, name, phone, department, course, cgpa, passing_year, created_at, updated_at FROM students WHERE user_id = ?',
-      [userId]
-    );
+  `SELECT
+    s.student_id,
+    s.roll_no,
+    s.name,
+    s.phone,
+    s.department,
+    s.course,
+    s.cgpa,
+    s.passing_year,
+    u.email,
+    s.created_at,
+    s.updated_at
+   FROM students s
+   JOIN users u ON s.user_id = u.id
+   WHERE s.user_id = ?`,
+  [userId]
+);
 
     if (students.length === 0) {
       return res.status(404).json({ success: false, message: 'Student profile not found' });
@@ -19,9 +33,15 @@ const getProfile = async (req, res, next) => {
     const student = students[0];
 
     const [skills] = await pool.query(
-      'SELECT s.skill_name FROM skills s JOIN student_skills ss ON s.skill_id = ss.skill_id WHERE ss.student_id = ?',
-      [student.student_id]
-    );
+  `SELECT
+    s.skill_id,
+    s.skill_name
+   FROM skills s
+   JOIN student_skills ss
+   ON s.skill_id = ss.skill_id
+   WHERE ss.student_id = ?`,
+  [student.student_id]
+);
 
     const [resumes] = await pool.query(
       'SELECT resume_id, resume_path, upload_date FROM resumes WHERE student_id = ? ORDER BY upload_date DESC',
@@ -32,7 +52,7 @@ const getProfile = async (req, res, next) => {
       success: true,
       student: {
         ...student,
-        skills: skills.map((s) => s.skill_name),
+        skills,
         resumes
       }
     });
@@ -176,11 +196,81 @@ const viewApplications = async (req, res, next) => {
   }
 };
 
+const addSkill = async (req, res, next) => {
+  try {
+    const { skillName } = req.body;
+
+    const [students] = await pool.query(
+      'SELECT student_id FROM students WHERE user_id = ?',
+      [req.user.id]
+    );
+
+    const studentId = students[0].student_id;
+
+    let [skills] = await pool.query(
+      'SELECT skill_id FROM skills WHERE skill_name = ?',
+      [skillName]
+    );
+
+    let skillId;
+
+    if (skills.length === 0) {
+      const [result] = await pool.query(
+        'INSERT INTO skills(skill_name) VALUES(?)',
+        [skillName]
+      );
+
+      skillId = result.insertId;
+    } else {
+      skillId = skills[0].skill_id;
+    }
+
+    await pool.query(
+      'INSERT IGNORE INTO student_skills(student_id, skill_id) VALUES (?, ?)',
+      [studentId, skillId]
+    );
+
+    res.json({
+      success: true,
+      message: 'Skill added successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const removeSkill = async (req, res, next) => {
+  try {
+    const skillId = Number(req.params.skillId);
+
+    const [students] = await pool.query(
+      'SELECT student_id FROM students WHERE user_id = ?',
+      [req.user.id]
+    );
+
+    const studentId = students[0].student_id;
+
+    await pool.query(
+      'DELETE FROM student_skills WHERE student_id = ? AND skill_id = ?',
+      [studentId, skillId]
+    );
+
+    res.json({
+      success: true,
+      message: 'Skill removed'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProfile,
   updateProfile,
   uploadResume,
   viewJobs,
   applyJob,
-  viewApplications
+  viewApplications,
+  addSkill,
+  removeSkill
 };
