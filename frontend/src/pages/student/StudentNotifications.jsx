@@ -1,13 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  APPLICATION_STATUS_LABELS,
   EmptyState,
   ErrorPanel,
-  formatDate,
   LoadingPanel,
   PageHeader,
   SectionCard,
 } from '../../components/dashboard/DashboardUI';
+import {
+  APPLICATION_STATUS_LABELS,
+  formatDate,
+} from '../../utils/dashboardUtils';
 import { getApplications } from '../../services/studentService';
 
 export default function StudentNotifications() {
@@ -75,11 +77,18 @@ export default function StudentNotifications() {
 
       <SectionCard title="Recent Updates">
         {notifications.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {notifications.map((notification) => (
-              <div key={notification.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm font-medium text-slate-900">{notification.message}</p>
-                <p className="mt-1 text-xs text-slate-500">{formatDate(notification.time)}</p>
+              <div key={notification.id} className="group rounded-2xl border border-slate-200/80 bg-white p-5 hover:shadow-md transition-all duration-300 flex items-start gap-4 border-l-4 border-l-indigo-600">
+                <div className="h-8 w-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                  <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-bold text-slate-800 leading-normal">{notification.message}</p>
+                  <p className="text-[11px] text-slate-400 font-semibold">{formatDate(notification.time)}</p>
+                </div>
               </div>
             ))}
           </div>

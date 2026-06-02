@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Badge,
@@ -38,13 +38,12 @@ export default function CompanyOverview() {
     };
   }, []);
 
-  const jobs = dashboard?.jobs || [];
   const applicants = dashboard?.applicants || [];
   const interviews = useMemo(
-    () => applicants.filter((a) => a.status === 'interview_scheduled'),
-    [applicants]
+    () => (dashboard?.applicants || []).filter((a) => a.status === 'interview_scheduled'),
+    [dashboard?.applicants]
   );
-  const activeJobs = useMemo(() => jobs.filter((job) => Number(job.is_active) === 1), [jobs]);
+  const activeJobs = useMemo(() => (dashboard?.jobs || []).filter((job) => Number(job.is_active) === 1), [dashboard?.jobs]);
 
   if (loading) return <LoadingPanel message="Loading dashboard..." />;
   if (error) return <ErrorPanel message={error} />;
@@ -92,16 +91,16 @@ export default function CompanyOverview() {
       </div>
 
       {activeJobs.length > 0 ? (
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">Recently Active Jobs</h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="mt-10 rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">Recently Active Jobs</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
             {activeJobs.slice(0, 4).map((job) => (
-              <div key={job.job_id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div key={job.job_id} className="rounded-2xl border border-slate-100 bg-slate-50/40 p-5 hover:bg-slate-50 transition-colors">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="font-semibold text-slate-900">{job.title}</p>
-                  <Badge className="bg-emerald-100 text-emerald-700">Active</Badge>
+                  <p className="font-bold text-slate-800">{job.title}</p>
+                  <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200/40">Active</Badge>
                 </div>
-                <p className="mt-1 text-sm text-slate-600">{job.location}</p>
+                <p className="mt-1.5 text-xs text-slate-500 font-medium">{job.location}</p>
               </div>
             ))}
           </div>
@@ -115,10 +114,19 @@ function QuickLink({ to, label, description }) {
   return (
     <Link
       to={to}
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between"
     >
-      <p className="font-semibold text-slate-900">{label}</p>
-      <p className="mt-2 text-sm text-slate-600">{description}</p>
+      <div>
+        <div className="flex items-center justify-between">
+          <p className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{label}</p>
+          <span className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all duration-300">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+        <p className="mt-3 text-xs text-slate-500 leading-relaxed">{description}</p>
+      </div>
     </Link>
   );
 }

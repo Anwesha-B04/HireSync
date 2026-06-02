@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ErrorPanel,
@@ -78,10 +78,19 @@ function QuickLink({ to, label, description }) {
   return (
     <Link
       to={to}
-      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between"
     >
-      <p className="font-semibold text-slate-900">{label}</p>
-      <p className="mt-2 text-sm text-slate-600">{description}</p>
+      <div>
+        <div className="flex items-center justify-between">
+          <p className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{label}</p>
+          <span className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all duration-300">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+        <p className="mt-3 text-xs text-slate-500 leading-relaxed">{description}</p>
+      </div>
     </Link>
   );
 }

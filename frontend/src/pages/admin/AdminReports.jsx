@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ErrorPanel,
   LoadingPanel,
@@ -79,12 +79,14 @@ export default function AdminReports() {
         />
       </div>
 
-      <SectionCard title="Detailed Metrics">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <Metric label="Students" value={summary?.students ?? 0} />
-          <Metric label="Companies" value={summary?.companies ?? 0} />
-          <Metric label="Jobs" value={summary?.jobs ?? 0} />
-          <Metric label="Applications" value={summary?.applications ?? 0} />
+      <div className="mt-10" />
+
+      <SectionCard title="Detailed Metrics Summary">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <Metric label="Students Count" value={summary?.students ?? 0} />
+          <Metric label="Companies Registered" value={summary?.companies ?? 0} />
+          <Metric label="Job Postings" value={summary?.jobs ?? 0} />
+          <Metric label="Job Applications" value={summary?.applications ?? 0} />
         </div>
       </SectionCard>
     </div>
@@ -93,9 +95,9 @@ export default function AdminReports() {
 
 function Metric({ label, value }) {
   return (
-    <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center ring-1 ring-slate-200">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
+    <div className="rounded-3xl border border-slate-100 bg-slate-50/40 px-5 py-6 text-center hover:bg-slate-50 transition-colors duration-200">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
+      <p className="mt-3 text-3xl font-black text-slate-900 tracking-tight">{value}</p>
     </div>
   );
 }

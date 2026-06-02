@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  APPLICATION_STATUS_CLASSES,
-  APPLICATION_STATUS_LABELS,
   Badge,
   EmptyState,
   ErrorPanel,
-  formatDate,
   LoadingPanel,
   PageHeader,
   SectionCard,
 } from '../../components/dashboard/DashboardUI';
+import {
+  APPLICATION_STATUS_CLASSES,
+  APPLICATION_STATUS_LABELS,
+  formatDate,
+} from '../../utils/dashboardUtils';
 import { getDashboard } from '../../services/companyService';
 
 export default function CompanyApplicants() {
@@ -54,28 +56,30 @@ export default function CompanyApplicants() {
 
       <SectionCard title="Applicant List">
         {applicants.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl border border-slate-200">
-            <div className="grid grid-cols-12 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <div className="col-span-3">Student</div>
-              <div className="col-span-3">Email</div>
-              <div className="col-span-3">Job</div>
-              <div className="col-span-2">Status</div>
+          <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white">
+            <div className="grid grid-cols-12 bg-slate-50/70 border-b border-slate-200 px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <div className="col-span-3">Student candidate</div>
+              <div className="col-span-3">Email address</div>
+              <div className="col-span-3">Target job role</div>
+              <div className="col-span-2">Recruitment stage</div>
               <div className="col-span-1 text-right">Applied</div>
             </div>
             <div className="divide-y divide-slate-100 bg-white">
               {applicants.map((applicant) => {
                 const statusKey = applicant.status || 'applied';
                 return (
-                  <div key={applicant.application_id} className="grid grid-cols-12 items-center px-4 py-4 text-sm">
-                    <div className="col-span-3 font-medium text-slate-900">{applicant.name}</div>
-                    <div className="col-span-3 text-slate-600">{applicant.email}</div>
-                    <div className="col-span-3 text-slate-600">{applicant.title}</div>
+                  <div key={applicant.application_id} className="grid grid-cols-12 items-center px-6 py-4.5 hover:bg-slate-50/30 transition-colors duration-200">
+                    <div className="col-span-3 pr-2">
+                      <div className="text-sm font-bold text-slate-800">{applicant.name}</div>
+                    </div>
+                    <div className="col-span-3 text-xs font-semibold text-slate-500 truncate pr-2">{applicant.email}</div>
+                    <div className="col-span-3 text-xs font-bold text-indigo-600/90 truncate pr-2">{applicant.title}</div>
                     <div className="col-span-2">
-                      <Badge className={APPLICATION_STATUS_CLASSES[statusKey] || 'bg-slate-100 text-slate-700'}>
+                      <Badge className={APPLICATION_STATUS_CLASSES[statusKey] || 'bg-slate-50 text-slate-700 border-slate-200'}>
                         {APPLICATION_STATUS_LABELS[statusKey] || statusKey}
                       </Badge>
                     </div>
-                    <div className="col-span-1 text-right text-slate-500">{formatDate(applicant.applied_at)}</div>
+                    <div className="col-span-1 text-right text-xs text-slate-400 font-medium">{formatDate(applicant.applied_at)}</div>
                   </div>
                 );
               })}

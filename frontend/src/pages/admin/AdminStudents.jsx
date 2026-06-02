@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   EmptyState,
   ErrorPanel,
@@ -52,27 +52,27 @@ export default function AdminStudents() {
 
       <SectionCard title="Student List">
         {students.length > 0 ? (
-          <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <div className="overflow-x-auto rounded-3xl border border-slate-200/80 bg-white">
             <table className="min-w-full divide-y divide-slate-100 text-sm">
-              <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <thead className="bg-slate-50/70 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
                 <tr>
-                  <th className="px-4 py-3">Roll No</th>
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Department</th>
-                  <th className="px-4 py-3">CGPA</th>
-                  <th className="px-4 py-3">Year</th>
+                  <th className="px-6 py-4">Roll No</th>
+                  <th className="px-6 py-4">Full name</th>
+                  <th className="px-6 py-4">Email address</th>
+                  <th className="px-6 py-4">Department</th>
+                  <th className="px-6 py-4">CGPA</th>
+                  <th className="px-6 py-4">Passing year</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
                 {students.map((student) => (
-                  <tr key={student.student_id}>
-                    <td className="px-4 py-3 font-medium text-slate-900">{student.roll_no}</td>
-                    <td className="px-4 py-3">{student.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{student.email}</td>
-                    <td className="px-4 py-3">{student.department}</td>
-                    <td className="px-4 py-3">{student.cgpa}</td>
-                    <td className="px-4 py-3">{student.passing_year}</td>
+                  <tr key={student.student_id} className="hover:bg-slate-50/30 transition-colors duration-200">
+                    <td className="px-6 py-4.5 font-bold text-slate-800">{student.roll_no}</td>
+                    <td className="px-6 py-4.5 font-semibold text-slate-700">{student.name}</td>
+                    <td className="px-6 py-4.5 text-xs text-slate-500 font-semibold">{student.email}</td>
+                    <td className="px-6 py-4.5 text-xs text-slate-500 font-bold">{student.department}</td>
+                    <td className="px-6 py-4.5 text-sm font-extrabold text-indigo-600">{student.cgpa}</td>
+                    <td className="px-6 py-4.5 text-xs text-slate-400 font-medium">{student.passing_year}</td>
                   </tr>
                 ))}
               </tbody>

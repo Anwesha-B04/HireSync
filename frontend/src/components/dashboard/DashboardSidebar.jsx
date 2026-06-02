@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 const ICONS = {
@@ -77,13 +76,20 @@ export default function DashboardSidebar({ brand, navItems, onNavigate }) {
   const location = useLocation();
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-slate-200 bg-slate-900 text-white">
-      <div className="border-b border-white/10 px-6 py-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-300">HireSync</p>
-        <p className="mt-1 text-lg font-semibold">{brand}</p>
+    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-slate-900/50 bg-slate-950 text-white select-none">
+      <div className="border-b border-white/5 px-6 py-6 flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold shadow-sm shadow-indigo-600/20">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <span className="text-xs font-black uppercase tracking-[0.25em] text-indigo-400">HireSync</span>
+        </div>
+        <p className="text-sm font-extrabold text-white tracking-wide">{brand}</p>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1.5 px-4 py-6 overflow-y-auto">
         {navItems.map((item) => {
           const iconKey = LABEL_ICON_MAP[item.label] || 'overview';
           return (
@@ -98,14 +104,14 @@ export default function DashboardSidebar({ brand, navItems, onNavigate }) {
                   : false;
                 const active = isActive || prefixActive;
 
-                return `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                return `flex items-center gap-3.5 rounded-xl px-3.5 py-3 text-xs font-bold transition duration-200 ${
                   active
-                    ? 'bg-indigo-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/10'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
                 }`;
               }}
             >
-              {ICONS[iconKey]}
+              <span className="transition-transform duration-200">{ICONS[iconKey]}</span>
               <span>{item.label}</span>
             </NavLink>
           );

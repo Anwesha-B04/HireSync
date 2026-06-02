@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Badge,
   EmptyState,
   ErrorPanel,
   LoadingPanel,
@@ -115,85 +114,91 @@ export default function StudentProfile() {
               <Row label="CGPA" value={profile.cgpa} />
               <Row label="Passing Year" value={profile.passing_year} />
             </div>
-            <div className="lg:col-span-2">
-              <p className="text-sm font-medium text-slate-500">Skills</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {skills.length > 0 ? (
-                  skills.map((skill) => (
-                    <div
-                      key={skill.skill_id}
-                      className="flex items-center gap-2"
-                    >
-                      <Badge className="bg-indigo-50 text-indigo-700">
-                        {skill.skill_name}
-                      </Badge>
-
-                      <button
-                        onClick={() =>
-                          handleRemoveSkill(skill.skill_id)
-                        }
-                        className="text-red-500 text-sm"
+            <div className="lg:col-span-2 space-y-6">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Professional Skills</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {skills.length > 0 ? (
+                    skills.map((skill) => (
+                      <div
+                        key={skill.skill_id}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50/50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-50 transition-colors"
                       >
-                        ✕
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-slate-500">
-                    No skills added yet.
-                  </p>
-                )}
+                        <span>{skill.skill_name}</span>
+                        <button
+                          onClick={() => handleRemoveSkill(skill.skill_id)}
+                          className="text-indigo-400 hover:text-indigo-700 transition-colors font-bold text-xs"
+                          aria-label="Remove skill"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-slate-500 italic">No skills added yet.</p>
+                  )}
+                </div>
+
+                <div className="mt-4 flex gap-3 max-w-sm">
+                  <input
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    placeholder="e.g. React"
+                    className="flex-1 rounded-xl border border-slate-300 px-4 py-2 text-sm focus:border-indigo-500"
+                  />
+                  <button
+                    onClick={handleAddSkill}
+                    className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-700 transition-all duration-200 shrink-0"
+                  >
+                    Add Skill
+                  </button>
+                </div>
               </div>
 
-              <div className="mt-4 flex gap-2">
-                <input
-                  value={newSkill}
-                  onChange={(e) =>
-                    setNewSkill(e.target.value)
-                  }
-                  placeholder="Add Skill"
-                  className="rounded border px-3 py-2"
-                />
-
-                <button
-                  onClick={handleAddSkill}
-                  className="rounded bg-indigo-600 px-4 py-2 text-white"
-                >
-                  Add Skill
-                </button>
-              </div>
-              <div className="mt-5 rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm font-medium text-slate-500">Latest Resume</p>
-                <div className="mt-3 space-y-3">
+              <div className="rounded-3xl border border-slate-200/80 bg-slate-50/50 p-6 space-y-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-800">Academic Resume PDF</p>
+                  <p className="text-xs text-slate-500">Upload your latest PDF resume to share with recruiting companies.</p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <input
                     type="file"
                     accept=".pdf,.doc,.docx"
-                    onChange={(e) =>
-                      setResumeFile(e.target.files[0])
-                    }
+                    onChange={(e) => setResumeFile(e.target.files[0])}
+                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                   />
 
                   <button
                     onClick={handleResumeUpload}
                     disabled={uploading}
-                    className="rounded bg-indigo-600 px-4 py-2 text-white"
+                    className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-700 transition-all duration-200 shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {uploading
-                      ? 'Uploading...'
-                      : 'Upload Resume'}
+                    {uploading ? 'Uploading...' : 'Upload Resume'}
                   </button>
+                </div>
 
-                  {latestResume && (
+                {latestResume && (
+                  <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <svg className="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <span>Active Resume (Uploaded {new Date(latestResume.upload_date).toLocaleDateString()})</span>
+                    </div>
                     <a
                       href={`http://localhost:5001/${latestResume.resume_path}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-blue-600 underline"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 underline transition-colors"
                     >
-                      View Resume
+                      View Current Resume
+                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
                     </a>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -207,9 +212,9 @@ export default function StudentProfile() {
 
 function Row({ label, value }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-2xl bg-slate-50 px-4 py-3">
-      <span className="text-sm font-medium text-slate-500">{label}</span>
-      <span className="text-sm font-semibold text-slate-900">{value || '-'}</span>
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-slate-50/40 px-5 py-3.5 hover:bg-slate-50 transition-colors">
+      <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</span>
+      <span className="text-sm font-bold text-slate-800">{value || '-'}</span>
     </div>
   );
 }

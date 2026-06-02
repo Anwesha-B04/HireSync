@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { LoadingPanel, PageHeader } from '../components/dashboard/DashboardUI';
@@ -106,24 +106,31 @@ export default function CompanyJobForm() {
         }
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            {error ? <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-rose-700">{error}</div> : null}
+      <form onSubmit={handleSubmit(onSubmit)} className="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-md">
+            {error ? (
+              <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs text-rose-700 flex items-start gap-2.5">
+                <svg className="h-5 w-5 shrink-0 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            ) : null}
 
             <div className="grid gap-5 md:grid-cols-2">
               <Field label="Job Title" error={errors.title?.message}>
-                <input {...register('title', { required: 'Job title is required' })} className={inputClass} />
+                <input {...register('title', { required: 'Job title is required' })} placeholder="e.g. Frontend Engineer" className={inputClass} />
               </Field>
 
               <Field label="Location" error={errors.location?.message}>
-                <input {...register('location', { required: 'Location is required' })} className={inputClass} />
+                <input {...register('location', { required: 'Location is required' })} placeholder="e.g. Bangalore, India" className={inputClass} />
               </Field>
 
               <Field label="Package (LPA)" error={errors.package_lpa?.message}>
-                <input type="number" step="0.1" {...register('package_lpa', { required: 'Package is required', valueAsNumber: true })} className={inputClass} />
+                <input type="number" step="0.1" {...register('package_lpa', { required: 'Package is required', valueAsNumber: true })} placeholder="e.g. 12" className={inputClass} />
               </Field>
 
-              <Field label="Minimum CGPA" error={errors.min_cgpa?.message}>
-                <input type="number" step="0.01" {...register('min_cgpa', { required: 'Minimum CGPA is required', valueAsNumber: true })} className={inputClass} />
+              <Field label="Minimum CGPA Requirement" error={errors.min_cgpa?.message}>
+                <input type="number" step="0.01" {...register('min_cgpa', { required: 'Minimum CGPA is required', valueAsNumber: true })} placeholder="e.g. 7.50" className={inputClass} />
               </Field>
 
               <Field label="Last Application Date" error={errors.last_date?.message}>
@@ -131,31 +138,31 @@ export default function CompanyJobForm() {
               </Field>
 
               {isEditMode ? (
-                <div className="flex items-end rounded-2xl bg-slate-50 px-4 py-3">
-                  <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
-                    <input type="checkbox" {...register('is_active')} className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                    Active job posting
+                <div className="flex items-center rounded-2xl border border-slate-100 bg-slate-50/50 px-5 py-3 mt-8">
+                  <label className="flex items-center gap-3 text-sm font-bold text-slate-700 cursor-pointer select-none">
+                    <input type="checkbox" {...register('is_active')} className="h-4.5 w-4.5 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" />
+                    Open for Job Applications
                   </label>
                 </div>
               ) : null}
 
               <div className="md:col-span-2">
-                <Field label="Description" error={errors.description?.message}>
-                  <textarea rows={6} {...register('description', { required: 'Description is required' })} className={inputClass} />
+                <Field label="Detailed Description" error={errors.description?.message}>
+                  <textarea rows={6} {...register('description', { required: 'Description is required' })} placeholder="Describe the role responsibilities, skill set requirements, and selection timeline..." className={inputClass} />
                 </Field>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap justify-end gap-3">
-              <Link to="/company/jobs" className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold shadow-sm hover:bg-slate-50">
+            <div className="mt-8 flex flex-wrap justify-end gap-3 border-t border-slate-100 pt-6">
+              <Link to="/company/jobs" className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={saving}
-                className="rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
+                className="rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/10 hover:bg-indigo-700 transition-all disabled:opacity-60"
               >
-                {saving ? 'Saving...' : isEditMode ? 'Update Job' : 'Create Job'}
+                {saving ? 'Saving...' : isEditMode ? 'Update Job Details' : 'Publish Job Listing'}
               </button>
             </div>
       </form>
@@ -166,9 +173,14 @@ export default function CompanyJobForm() {
 function Field({ label, error, children }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-slate-700">{label}</label>
+      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500">{label}</label>
       {children}
-      {error ? <p className="mt-2 text-sm text-rose-600">{error}</p> : null}
+      {error ? (
+        <p className="mt-1.5 text-xs text-rose-600 font-semibold flex items-center gap-1">
+          <span className="inline-block h-1 w-1 rounded-full bg-rose-500" />
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -180,4 +192,4 @@ function formatDateInput(value) {
   return date.toISOString().slice(0, 10);
 }
 
-const inputClass = 'w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100';
+const inputClass = 'w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 bg-white transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100';

@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  APPLICATION_STATUS_CLASSES,
-  APPLICATION_STATUS_LABELS,
   Badge,
   EmptyState,
   ErrorPanel,
-  formatDate,
   LoadingPanel,
   PageHeader,
   SectionCard,
 } from '../../components/dashboard/DashboardUI';
+import {
+  APPLICATION_STATUS_CLASSES,
+  APPLICATION_STATUS_LABELS,
+  formatDate,
+} from '../../utils/dashboardUtils';
 import { getApplications } from '../../services/studentService';
 
 export default function StudentApplications() {
@@ -54,26 +56,28 @@ export default function StudentApplications() {
 
       <SectionCard title="Application History">
         {applications.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl border border-slate-200">
-            <div className="grid grid-cols-12 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <div className="col-span-5">Job</div>
+          <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white">
+            <div className="grid grid-cols-12 bg-slate-50/70 border-b border-slate-200 px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <div className="col-span-4">Job details</div>
               <div className="col-span-3">Company</div>
-              <div className="col-span-2">Status</div>
-              <div className="col-span-2 text-right">Applied</div>
+              <div className="col-span-3">Recruitment status</div>
+              <div className="col-span-2 text-right">Applied date</div>
             </div>
             <div className="divide-y divide-slate-100 bg-white">
               {applications.map((application) => {
                 const statusKey = application.status || 'applied';
                 return (
-                  <div key={application.application_id} className="grid grid-cols-12 items-center px-4 py-4 text-sm">
-                    <div className="col-span-5 font-medium text-slate-900">{application.title}</div>
-                    <div className="col-span-3 text-slate-600">{application.company_name}</div>
-                    <div className="col-span-2">
-                      <Badge className={APPLICATION_STATUS_CLASSES[statusKey] || 'bg-slate-100 text-slate-700'}>
+                  <div key={application.application_id} className="grid grid-cols-12 items-center px-6 py-4.5 hover:bg-slate-50/30 transition-colors duration-200">
+                    <div className="col-span-4 pr-3">
+                      <div className="text-sm font-bold text-slate-800">{application.title}</div>
+                    </div>
+                    <div className="col-span-3 text-xs font-semibold text-slate-500">{application.company_name}</div>
+                    <div className="col-span-3">
+                      <Badge className={APPLICATION_STATUS_CLASSES[statusKey] || 'bg-slate-50 text-slate-700 border-slate-200'}>
                         {APPLICATION_STATUS_LABELS[statusKey] || statusKey}
                       </Badge>
                     </div>
-                    <div className="col-span-2 text-right text-slate-500">{formatDate(application.applied_at)}</div>
+                    <div className="col-span-2 text-right text-xs text-slate-400 font-medium">{formatDate(application.applied_at)}</div>
                   </div>
                 );
               })}

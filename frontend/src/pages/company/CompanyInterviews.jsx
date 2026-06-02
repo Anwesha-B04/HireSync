@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  APPLICATION_STATUS_CLASSES,
-  APPLICATION_STATUS_LABELS,
   Badge,
   EmptyState,
   ErrorPanel,
-  formatDate,
   LoadingPanel,
   PageHeader,
   SectionCard,
 } from '../../components/dashboard/DashboardUI';
+import {
+  APPLICATION_STATUS_LABELS,
+  formatDate,
+} from '../../utils/dashboardUtils';
 import { getDashboard } from '../../services/companyService';
 
 export default function CompanyInterviews() {
@@ -61,17 +62,24 @@ export default function CompanyInterviews() {
         {interviews.length > 0 ? (
           <div className="space-y-4">
             {interviews.map((candidate) => (
-              <div key={candidate.application_id} className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                <p className="font-semibold text-slate-900">{candidate.name}</p>
-                <p className="mt-1 text-sm text-slate-600">{candidate.title}</p>
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                  <Badge className={APPLICATION_STATUS_CLASSES.interview_scheduled}>
+              <div key={candidate.application_id} className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-l-4 border-l-indigo-600">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <p className="font-extrabold text-slate-800 text-lg leading-snug">{candidate.name}</p>
+                    <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg">{candidate.roll_no}</span>
+                  </div>
+                  <p className="text-xs font-bold text-indigo-600/90">{candidate.title}</p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs text-slate-400 font-medium">
+                    <span>Email: <strong className="text-slate-600">{candidate.email}</strong></span>
+                    <span>Applied: <strong className="text-slate-600">{formatDate(candidate.applied_at)}</strong></span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200/50">
                     {APPLICATION_STATUS_LABELS.interview_scheduled}
                   </Badge>
-                  <span className="text-xs text-slate-500">{candidate.roll_no}</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">{candidate.email}</p>
-                <p className="mt-1 text-xs text-slate-500">Applied: {formatDate(candidate.applied_at)}</p>
               </div>
             ))}
           </div>
