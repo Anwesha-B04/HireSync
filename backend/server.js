@@ -46,12 +46,9 @@ app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  '/uploads',
-  express.static(
-    path.join(process.cwd(), 'uploads')
-  )
-);
+// Serve uploaded files statically
+const uploadsPath = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // Prevent browsers from caching API JSON (avoids stale empty job lists after seeding)
 app.use('/api', (_req, res, next) => {
@@ -59,9 +56,6 @@ app.use('/api', (_req, res, next) => {
 	res.set('Pragma', 'no-cache');
 	next();
 });
-
-// Serve uploaded files
-app.use(`/${uploadDir}`, express.static(path.join(__dirname, '..', uploadDir)));
 
 // Register routes
 app.use('/api/auth', authRoutes);

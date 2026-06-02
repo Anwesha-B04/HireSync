@@ -107,7 +107,7 @@ const uploadResume = async (req, res, next) => {
     }
 
     const studentId = students[0].student_id;
-    const relativePath = path.relative(process.cwd(), req.file.path).replace(/\\/g, '/');
+    const relativePath = `uploads/${req.file.filename}`;
 
     const [result] = await pool.query(
       'INSERT INTO resumes (student_id, resume_path) VALUES (?, ?)',
