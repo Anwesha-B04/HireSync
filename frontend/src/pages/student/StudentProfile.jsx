@@ -12,6 +12,7 @@ import {
   addSkill,
   removeSkill
 } from '../../services/studentService';
+import { API_URL } from '../../services/api';
 
 export default function StudentProfile() {
   const [profile, setProfile] = useState(null);
@@ -187,7 +188,7 @@ export default function StudentProfile() {
                       <span>Active Resume (Uploaded {new Date(latestResume.upload_date).toLocaleDateString()})</span>
                     </div>
                     <a
-                      href={`http://localhost:5001/${latestResume.resume_path}`}
+                      href={`${API_URL}/${latestResume.resume_path}`}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 underline transition-colors"
@@ -210,7 +211,7 @@ export default function StudentProfile() {
                             Resume Version {profile.resumes.length - index} (Uploaded: {new Date(res.upload_date).toLocaleString()})
                           </span>
                           <a
-                            href={`http://localhost:5001/${res.resume_path}`}
+                            href={`${API_URL}/${res.resume_path}`}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800 underline transition-colors"

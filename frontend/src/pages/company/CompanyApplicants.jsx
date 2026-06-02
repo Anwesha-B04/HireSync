@@ -12,6 +12,7 @@ import {
   APPLICATION_STATUS_LABELS,
 } from '../../utils/dashboardUtils';
 import { getDashboard, shortlistStudent, scheduleInterview } from '../../services/companyService';
+import { API_URL } from '../../services/api';
 
 export default function CompanyApplicants() {
   const [applicants, setApplicants] = useState([]);
@@ -129,7 +130,7 @@ export default function CompanyApplicants() {
                     <div className="col-span-2.5 flex items-center justify-end gap-2 text-xs">
                       {applicant.resume_path ? (
                         <a
-                          href={`http://localhost:5001/${applicant.resume_path}`}
+                          href={`${API_URL}/${applicant.resume_path}`}
                           target="_blank"
                           rel="noreferrer"
                           className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 font-bold text-slate-600 hover:bg-slate-50 transition-colors"
