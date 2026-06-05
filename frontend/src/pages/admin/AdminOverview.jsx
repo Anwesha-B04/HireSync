@@ -7,6 +7,7 @@ import {
   StatCard,
 } from '../../components/dashboard/DashboardUI';
 import { getSummary } from '../../services/adminService';
+import { BarChart, DoughnutChart } from '../../components/dashboard/AnalyticsCharts';
 
 export default function AdminOverview() {
   const [summary, setSummary] = useState(null);
@@ -51,6 +52,24 @@ export default function AdminOverview() {
     };
   }, [summary]);
 
+  const systemMetricsData = useMemo(() => [
+    { label: 'Students', value: Number(summary?.students || 0), color: '#6366f1' },
+    { label: 'Companies', value: Number(summary?.companies || 0), color: '#10b981' },
+    { label: 'Jobs', value: Number(summary?.jobs || 0), color: '#8b5cf6' },
+    { label: 'Applications', value: Number(summary?.applications || 0), color: '#f59e0b' },
+    { label: 'Placements', value: Number(summary?.placements || 0), color: '#f43f5e' },
+  ], [summary]);
+
+  const placementStatusData = useMemo(() => {
+    const placed = Number(summary?.placements || 0);
+    const totalStudents = Number(summary?.students || 0);
+    const unplaced = Math.max(0, totalStudents - placed);
+    return [
+      { label: 'Placed', value: placed, color: '#10b981' },
+      { label: 'Unplaced', value: unplaced, color: '#cbd5e1' },
+    ];
+  }, [summary]);
+
   if (loading) return <LoadingPanel message="Loading dashboard..." />;
   if (error) return <ErrorPanel message={error} />;
 
@@ -67,6 +86,16 @@ export default function AdminOverview() {
         <StatCard label="Total Companies" value={summary?.companies ?? 0} helper="Registered companies" />
         <StatCard label="Total Jobs" value={summary?.jobs ?? 0} helper="Job postings" />
         <StatCard label="Total Placements" value={summary?.placements ?? 0} helper="Students placed" />
+      </div>
+
+      {/* Analytics Charts */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <BarChart data={systemMetricsData} title="System Activity & Registrations" />
+        </div>
+        <div>
+          <DoughnutChart data={placementStatusData} title="Placement Summary" />
+        </div>
       </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-3">
